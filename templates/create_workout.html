@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Workout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function increment(button) {
+            var input = button.previousElementSibling;
+            input.stepUp();
+        }
+
+        function decrement(button) {
+            var input = button.nextElementSibling;
+            if (input.value > 1) {
+                input.stepDown();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Create a New Workout</h1>
+    <form method="post">
+        <table border="1">
+            <tr>
+                <th>Exercise</th>
+                <th>Sets</th>
+                <th>Reps</th>
+                <th>Weight (kg)</th>
+            </tr>
+            {% for exercise in exercises %}
+            <tr>
+                <td>{{ exercise }}</td>
+                <td>
+                    <input type="hidden" name="exercise[]" value="{{ exercise }}">
+                    <button type="button" onclick="decrement(this)">-</button>
+                    <input type="number" name="sets[]" min="1" value="1">
+                    <button type="button" onclick="increment(this)">+</button>
+                </td>
+                <td>
+                    <button type="button" onclick="decrement(this)">-</button>
+                    <input type="number" name="reps[]" min="1" value="1">
+                    <button type="button" onclick="increment(this)">+</button>
+                </td>
+                <td>
+                    <input type="number" name="weight[]" min="0" step="0.1" value="0">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <input type="submit" value="Save Workout">
+    </form>
+    <br>
+    <a href="{{ url_for('workout') }}">Back to Workout Page</a>
+</body>
+
+</html>

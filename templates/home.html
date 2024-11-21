@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>OpenFitnessApp</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <header>
+        <h1>OpenFitnessApp</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+
+                {% if 'username' in session %}
+
+                <li><a href="{{ url_for('home') }}">Work Log</a></li>
+                <li><a href="{{ url_for('home') }}">Goals</a></li>
+                <li><a href="{{ url_for('workout') }}">Tracker</a></li>
+
+
+                <li>
+
+
+                </li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Overview</h2>
+            <p>Track your workouts, set goals, monitor your nutrition, and achieve the results you’ve always wanted.</p>
+            <a href="{{ url_for('signup') }}" class="btn">Get Started</a>
+        </section>
+        <section class="features">
+            <h2>Features</h2>
+            <div class="feature-item">
+                <h3>Work Log</h3>
+                <p>Log your exercises and track your progress.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Gym Goals</h3>
+                <p>Set and manage your goals.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Weight & Calorie/Macros Tracker</h3>
+                <p>Monitor your weight and nutritional intake.</p>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
