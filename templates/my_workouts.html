@@ -9,12 +9,19 @@
 
 <body>
     <header>
-        <h1>My Workouts</h1>
+        <h1>OpenFitnessApp</h1>
         <nav>
             <ul>
                 <li><a href="{{ url_for('home') }}">Home</a></li>
 
+                {% if 'username' in session %}
+                <li><a href="{{ url_for('createworkout') }}">Create Workout</a></li>
+                <li><a href="{{ url_for('myworkouts') }}">My Workouts</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>
@@ -24,7 +31,25 @@
     </main>
 
     <script>
+        async function fetchWorkouts() {
+            const response = await fetch('/api/get-workouts');
+            if (response.ok) {
+                const data = await response.json();
+                const workoutList = document.getElementById('workoutList');
+                data.workouts.forEach((workout) => {
+                    const li = document.createElement('li');
+                    li.textContent = `
+                        Date: ${workout.date}, Exercise: ${workout.exercise},
+                        Sets: ${workout.sets}, Reps: ${workout.reps}, Weight: ${workout.weight}kg
+                    `;
+                    workoutList.appendChild(li);
+                });
+            } else {
+                console.error('Failed to fetch workouts.');
+            }
+        }
 
+        fetchWorkouts();
     </script>
 </body>
 

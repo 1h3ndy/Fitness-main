@@ -50,36 +50,14 @@ def signup():
 
     return render_template('signup.html')
 
-@app.route('/insert')
-def insert():
-    # Insert a test user into the Users table
-    with sqlite3.connect('login.db') as db:
-        cursor = db.cursor()
-        cursor.execute("INSERT INTO User (Name, Password) VALUES ('Bob', '123')")
-        db.commit()
-    return 'Test user Bob inserted.'
 
-@app.route('/select')
-def select():
-
-    try:
-        with sqlite3.connect('login.db') as db:
-            cursor = db.cursor()
-            cursor.execute("SELECT * FROM User")
-            result = cursor.fetchall()
-            if len(result) == 0:
-                return 'No records found.'
-            else:
-                return ', '.join(map(str, result))
-    except Exception as e:
-        return str(e)
 
 
 @app.route('/add', methods=['POST']) # updated add for new database schema
 def add():
     if request.form['password'] != request.form['psw-repeat']:
         flash("Passwords ")
-        return redirect(url_for('register'))  #
+        return redirect(url_for('login'))  #
     with sqlite3.connect('login.db') as db:
         cursor = db.cursor()
         try:
@@ -102,7 +80,7 @@ def add():
         except Exception as e: # let them kno its taken
 
             flash("An error occurred.")
-            return redirect(url_for('register'))
+            return redirect(url_for('login'))
 
 
 @app.route('/verify', methods=['POST'])
@@ -198,27 +176,39 @@ def create_workout_submit():
     return redirect(url_for('myworkouts'))
 
 
-
 @app.route('/api/get-workouts', methods=['GET'])
 def get_workouts_api():
     if 'username' not in session:
         return {"message": "Unauthorized"}, 401
-    email = session['username']
+
+    username = session['username']
+
     with sqlite3.connect('login.db') as db:
+
         cursor = db.cursor()
 
-        cursor.execute("SELECT User_ID FROM User WHERE Email = ?", (email,))
+
+        cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
         user = cursor.fetchone()
         if not user:
             return {"message": "User not found"}, 404
         user_id = user[0]
 
+
         cursor.execute("""
-       
+            SELECT 
+                Workouts.Date, 
+                Exercise.Exercise_Name, 
+                Exercise.No_Sets, 
+                Exercise.No_Reps_Per_Set, 
+                Exercise.Weight
+            FROM Workouts
+            JOIN Exercise ON Workouts.Workout_ID = Exercise.Workout_ID
+            WHERE Workouts.User_ID = ?
+            ORDER BY Workouts.Date DESC
         """, (user_id,))
         workouts = cursor.fetchall()
-
-    formatted_workouts = [
+    formatworkouts = [
         {
             "date": row[0],
             "exercise": row[1],
@@ -228,7 +218,9 @@ def get_workouts_api():
         }
         for row in workouts
     ]
-    return {"workouts": formatted_workouts}, 200
+
+    return {"workouts": formatworkouts}, 200
+
 
 
 app.secret_key = 'the random string'

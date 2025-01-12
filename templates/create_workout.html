@@ -25,19 +25,26 @@
                     <label>Exercise Name:</label>
                     <select name="name[]" required>
                         <option value="Bench Press">Bench Press</option>
+                        <option value="Chest Press">Chest Press</option>
+                        <option value="Lateral Raise">Lateral Raise</option>
+                        <option value="Shoulder Press">Shoulder Press</option>
                         <option value="Squat">Squat</option>
                         <option value="Deadlift">Deadlift</option>
                         <option value="Bicep Curl">Bicep Curl</option>
                         <option value="Shoulder Press">Shoulder Press</option>
                         <option value="Pull-Up">Pull-Up</option>
-                        <option value="Lunge">Lunge</option>
-                        <option value="Plank">Plank</option>
+                        <option value="Lateral Pulldowns">Lat Pull Downs</option>
+                        <option value="Row">Row</option>
+                        <option value="Barbell Row">Plank</option>
+                        <option value="Overhead Tricep Extension">Over head Tricep Extension</option>
                         <option value="Tricep Extension">Tricep Extension</option>
+                        <option value="Face Pull">Face Pulls</option>
+                        <option value="Rear Delt Flys">Rear Delt flys</option>
                         <option value="Leg Press">Leg Press</option>
                     </select>
 
                     <label>Sets:</label>
-                    <input type="number" name="sets[]" min="1" max="10" required placeholder="Enter sets">
+                    <input type="number" name="sets[]" min="1" max="30" required placeholder="Enter sets">
 
                     <label>Reps:</label>
                     <input type="number" name="reps[]" min="1" max="50" required placeholder="Enter reps">
@@ -59,27 +66,34 @@
 
             exerciseDiv.innerHTML = `
                 <label>Exercise Name:</label>
-                <select name="name[]" required>
+                <select name="name[]" required> -- for creating new sets ina workout
                     <option value="Bench Press">Bench Press</option>
+                    <option value="Chest Press">Chest Press</option>
+                    <option value="Lateral Raise">Lateral Raise</option>
+                    <option value="Shoulder Press">Shoulder Press</option>
                     <option value="Squat">Squat</option>
                     <option value="Deadlift">Deadlift</option>
                     <option value="Bicep Curl">Bicep Curl</option>
                     <option value="Shoulder Press">Shoulder Press</option>
                     <option value="Pull-Up">Pull-Up</option>
-                    <option value="Lunge">Lunge</option>
-                    <option value="Plank">Plank</option>
+                    <option value="Lateral Pulldowns">Lat Pull Downs</option>
+                    <option value="Row">Row</option>
+                    <option value="Barbell Row">Plank</option>
+                    <option value="Overhead Tricep Extension">Over head Tricep Extension</option>
                     <option value="Tricep Extension">Tricep Extension</option>
+                    <option value="Face Pull">Face Pulls</option>
+                    <option value="Rear Delt Flys">Rear Delt flys</option>
                     <option value="Leg Press">Leg Press</option>
                 </select>
 
                 <label>Sets:</label>
-                <input type="number" name="sets[]" min="1" max="10" required placeholder="Enter sets">
+                <input type="number" name="sets[]" min="1" max="20" required placeholder="Enter sets">
 
                 <label>Reps:</label>
-                <input type="number" name="reps[]" min="1" max="50" required placeholder="Enter reps">
+                <input type="number" name="reps[]" min="1" max="29" required placeholder="Enter reps">
 
                 <label>Weight (kg):</label>
-                <input type="number" name="weight[]" min="0" max="300" required placeholder="Enter weight">
+                <input type="number" name="weight[]" min="0" max="300" required placeholder="Enter weight (kg)">
             `;
 
             container.appendChild(exerciseDiv);
