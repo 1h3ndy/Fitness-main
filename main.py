@@ -74,7 +74,7 @@ def select():
 @app.route('/add', methods=['POST']) # updated add for new database schema
 def add():
     if request.form['password'] != request.form['psw-repeat']:
-        flash("Passwords do not match!")
+        flash("Passwords ")
         return redirect(url_for('register'))  #
     with sqlite3.connect('login.db') as db:
         cursor = db.cursor()
