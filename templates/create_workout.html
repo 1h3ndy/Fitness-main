@@ -13,7 +13,6 @@
         <nav>
             <ul>
                 <li><a href="{{ url_for('home') }}">Home</a></li>
-
                 <li><a href="{{ url_for('myworkouts') }}">My Workouts</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
@@ -38,49 +37,29 @@
                     </select>
 
                     <label>Sets:</label>
-                    <select name="sets[]" required>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
+                    <input type="number" name="sets[]" min="1" max="10" required placeholder="Enter sets">
 
                     <label>Reps:</label>
-                    <select name="reps[]" required>
-                        <option value="5">5</option>
-                        <option value="8">8</option>
-                        <option value="10">10</option>
-                        <option value="12">12</option>
-                        <option value="15">15</option>
-                    </select>
+                    <input type="number" name="reps[]" min="1" max="50" required placeholder="Enter reps">
 
                     <label>Weight (kg):</label>
-                    <select name="weight[]" required>
-
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                        <option value="40">40</option>
-                        <option value="50">50</option>
-                        <option value="60">60</option>
-                        <option value="70">70</option>
-                        <option value="80">80</option>
-                    </select>
+                    <input type="number" name="weight[]" min="0" max="300" required placeholder="Enter weight">
                 </div>
             </div>
-            <button type="button" onclick="addExercise()">Add Another Exercise</button>
+            <button type="button" onclick="addset()">Add Another Exercise</button>
             <button type="submit">Submit Workout</button>
         </form>
     </main>
 
     <script>
-        function addExercise() {
+        function addset() {
             const container = document.getElementById('exerciseContainer');
             const exerciseDiv = document.createElement('div');
             exerciseDiv.className = 'exercise';
+
             exerciseDiv.innerHTML = `
                 <label>Exercise Name:</label>
-                <select name="name[]" required><!-- switch this to use a dictionary for easier editing, and linking muscle use values -->
+                <select name="name[]" required>
                     <option value="Bench Press">Bench Press</option>
                     <option value="Squat">Squat</option>
                     <option value="Deadlift">Deadlift</option>
@@ -94,35 +73,15 @@
                 </select>
 
                 <label>Sets:</label>
-                <select name="sets[]" required>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
+                <input type="number" name="sets[]" min="1" max="10" required placeholder="Enter sets">
 
                 <label>Reps:</label>
-                <select name="reps[]" required>
-                    <option value="5">5</option>
-                    <option value="8">8</option>
-                    <option value="10">10</option>
-                    <option value="12">12</option>
-                    <option value="15">15</option>
-                </select>
+                <input type="number" name="reps[]" min="1" max="50" required placeholder="Enter reps">
 
                 <label>Weight (kg):</label>
-                <select name="weight[]" required>
-                    <option value="0">Bodyweight</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                    <option value="60">60</option>
-                    <option value="70">70</option>
-                    <option value="80">80</option>
-                </select>
+                <input type="number" name="weight[]" min="0" max="300" required placeholder="Enter weight">
             `;
+
             container.appendChild(exerciseDiv);
         }
     </script>

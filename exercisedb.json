@@ -1,0 +1,17 @@
+{
+    "Bench Press": "Chest",
+    "Incline Bench Press": "Chest",
+    "Chest Fly": "Chest",
+    "Squat": "Legs",
+    "Lunge": "Legs",
+    "Leg Press": "Legs",
+    "Pull-Up": "Back",
+    "Deadlift": "Back",
+    "Barbell Row": "Back",
+    "Shoulder Press": "Shoulders",
+    "Lateral Raise": "Shoulders",
+    "Arnold Press": "Shoulders",
+    "Bicep Curl": "Arms",
+    "Tricep Extension": "Arms",
+    "Hammer Curl": "Arms"
+}

@@ -5,18 +5,22 @@ from markupsafe import escape
 from datetime import datetime, timedelta
 
 exercises_dict = {
-    'Bench Press': ['Chest', 'Triceps', 'Shoulders'],
-    'Squat': ['Legs', 'Glutes', 'Lower Back'],
-    'Deadlift': ['Back', 'Legs', 'Forearms'],
-    'Bicep Curl': ['Biceps'],
-    'Shoulder Press': ['Shoulders', 'Triceps'],
-    'Pull-Up': ['Back', 'Biceps'],
-    'Lunge': ['Legs', 'Glutes'],
-    'Plank': ['Core'],
-    'Tricep Extension': ['Triceps'],
-    'Leg Press': ['Legs']
-}
-
+    'Bench Press': 'Chest',
+    'Incline Bench Press': 'Chest',
+    'Chest Fly': 'Chest',
+    'Squat': 'Legs',
+    'Lunge': 'Legs',
+    'Leg Press': 'Legs',
+    'Pull-Up': 'Back',
+    'Deadlift': 'Back',
+    'Barbell Row': 'Back',
+    'Shoulder Press': 'Shoulders',
+    'Lateral Raise': 'Shoulders',
+    'Arnold Press': 'Shoulders',
+    'Bicep Curl': 'Arms',
+    'Tricep Extension': 'Arms',
+    'Hammer Curl': 'Arms'
+} # make createworkout.html pull from here
 
 app = Flask(__name__)
 #permanent = True
