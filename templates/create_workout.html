@@ -5,56 +5,127 @@
     <meta charset="UTF-8">
     <title>Create Workout</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script>
-        function increment(button) {
-            var input = button.previousElementSibling;
-            input.stepUp();
-        }
-
-        function decrement(button) {
-            var input = button.nextElementSibling;
-            if (input.value > 1) {
-                input.stepDown();
-            }
-        }
-    </script>
 </head>
 
 <body>
-    <h1>Create a New Workout</h1>
-    <form method="post">
-        <table border="1">
-            <tr>
-                <th>Exercise</th>
-                <th>Sets</th>
-                <th>Reps</th>
-                <th>Weight (kg)</th>
-            </tr>
-            {% for exercise in exercises %}
-            <tr>
-                <td>{{ exercise }}</td>
-                <td>
-                    <input type="hidden" name="exercise[]" value="{{ exercise }}">
-                    <button type="button" onclick="decrement(this)">-</button>
-                    <input type="number" name="sets[]" min="1" value="1">
-                    <button type="button" onclick="increment(this)">+</button>
-                </td>
-                <td>
-                    <button type="button" onclick="decrement(this)">-</button>
-                    <input type="number" name="reps[]" min="1" value="1">
-                    <button type="button" onclick="increment(this)">+</button>
-                </td>
-                <td>
-                    <input type="number" name="weight[]" min="0" step="0.1" value="0">
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <br>
-        <input type="submit" value="Save Workout">
-    </form>
-    <br>
-    <a href="{{ url_for('workout') }}">Back to Workout Page</a>
+    <header>
+        <h1>Create Workout</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+
+                <li><a href="{{ url_for('myworkouts') }}">My Workouts</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form action="{{ url_for('create_workout_submit') }}" method="POST">
+            <div id="exerciseContainer">
+                <div class="exercise">
+                    <label>Exercise Name:</label>
+                    <select name="name[]" required>
+                        <option value="Bench Press">Bench Press</option>
+                        <option value="Squat">Squat</option>
+                        <option value="Deadlift">Deadlift</option>
+                        <option value="Bicep Curl">Bicep Curl</option>
+                        <option value="Shoulder Press">Shoulder Press</option>
+                        <option value="Pull-Up">Pull-Up</option>
+                        <option value="Lunge">Lunge</option>
+                        <option value="Plank">Plank</option>
+                        <option value="Tricep Extension">Tricep Extension</option>
+                        <option value="Leg Press">Leg Press</option>
+                    </select>
+
+                    <label>Sets:</label>
+                    <select name="sets[]" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+
+                    <label>Reps:</label>
+                    <select name="reps[]" required>
+                        <option value="5">5</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                        <option value="15">15</option>
+                    </select>
+
+                    <label>Weight (kg):</label>
+                    <select name="weight[]" required>
+
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                        <option value="80">80</option>
+                    </select>
+                </div>
+            </div>
+            <button type="button" onclick="addExercise()">Add Another Exercise</button>
+            <button type="submit">Submit Workout</button>
+        </form>
+    </main>
+
+    <script>
+        function addExercise() {
+            const container = document.getElementById('exerciseContainer');
+            const exerciseDiv = document.createElement('div');
+            exerciseDiv.className = 'exercise';
+            exerciseDiv.innerHTML = `
+                <label>Exercise Name:</label>
+                <select name="name[]" required><!-- switch this to use a dictionary for easier editing, and linking muscle use values -->
+                    <option value="Bench Press">Bench Press</option>
+                    <option value="Squat">Squat</option>
+                    <option value="Deadlift">Deadlift</option>
+                    <option value="Bicep Curl">Bicep Curl</option>
+                    <option value="Shoulder Press">Shoulder Press</option>
+                    <option value="Pull-Up">Pull-Up</option>
+                    <option value="Lunge">Lunge</option>
+                    <option value="Plank">Plank</option>
+                    <option value="Tricep Extension">Tricep Extension</option>
+                    <option value="Leg Press">Leg Press</option>
+                </select>
+
+                <label>Sets:</label>
+                <select name="sets[]" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+
+                <label>Reps:</label>
+                <select name="reps[]" required>
+                    <option value="5">5</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="12">12</option>
+                    <option value="15">15</option>
+                </select>
+
+                <label>Weight (kg):</label>
+                <select name="weight[]" required>
+                    <option value="0">Bodyweight</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="60">60</option>
+                    <option value="70">70</option>
+                    <option value="80">80</option>
+                </select>
+            `;
+            container.appendChild(exerciseDiv);
+        }
+    </script>
 </body>
 
 </html>

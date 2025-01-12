@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +6,7 @@
     <meta charset="UTF-8">
     <title>OpenFitnessApp</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
 <body>
@@ -17,9 +18,10 @@
 
                 {% if 'username' in session %}
 
-                <li><a href="{{ url_for('home') }}">Work Log</a></li>
-                <li><a href="{{ url_for('home') }}">Goals</a></li>
-                <li><a href="{{ url_for('workout') }}">Tracker</a></li>
+
+                <li><a href="/create_workout">Create Workout</a></li> <! navbar-- -->
+<               <li><a href="/my_workouts">My Workouts</a></li>
+
 
 
                 <li>
@@ -39,22 +41,22 @@
     <main>
         <section class="hero">
             <h2>Overview</h2>
-            <p>Track your workouts, set goals, monitor your nutrition, and achieve the results you’ve always wanted.</p>
-            <a href="{{ url_for('signup') }}" class="btn">Get Started</a>
+            <p>There should be the body render to display muslce usage</p>
+            <a href="{{ url_for('createworkout') }}" class="btn">Log Your first workout</a>
         </section>
         <section class="features">
             <h2>Features</h2>
             <div class="feature-item">
                 <h3>Work Log</h3>
-                <p>Log your exercises and track your progress.</p>
+                <p>here shoud be the graph for user body table that shows muscled worked </p>
             </div>
             <div class="feature-item">
                 <h3>Gym Goals</h3>
-                <p>Set and manage your goals.</p>
+                <p>Set and manage your goal</p>
             </div>
             <div class="feature-item">
-                <h3>Weight & Calorie/Macros Tracker</h3>
-                <p>Monitor your weight and nutritional intake.</p>
+                <h3>Weight and Calorie Tracker</h3>
+                <p>Monitor your weight.</p>
             </div>
         </section>
     </main>

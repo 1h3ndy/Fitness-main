@@ -104,3 +104,75 @@ footer {
     width: 100%;
     bottom: 0;
 }
+
+form {
+    border: 3px solid #f1f1f1;
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+
+.container label,
+.container input {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+/* code above allows forms to be vertical*/
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+
+
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+.cancelbtn {
+    width: auto;
+    padding: 10px 20px;
+    background-color: #f44336;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.signupbuttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
