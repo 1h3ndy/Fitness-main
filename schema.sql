@@ -38,3 +38,10 @@ CREATE TABLE Exercise (
     Weight INT,
     FOREIGN KEY (Workout_ID) REFERENCES Workouts(Workout_ID)
 );
+CREATE TABLE WeightLog (
+    WeightLog_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    User_ID INTEGER NOT NULL,
+    Date DATE DEFAULT (DATE('now')),
+    Weight REAL NOT NULL,
+    FOREIGN KEY (User_ID) REFERENCES User(User_ID)
+);

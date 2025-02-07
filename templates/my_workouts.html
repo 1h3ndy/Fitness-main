@@ -16,6 +16,7 @@
 
                 {% if 'username' in session %}
                 <li><a href="{{ url_for('createworkout') }}">Create Workout</a></li>
+                <li><a href="{{ url_for('weight_log') }}">Weight Tracker</a></li>
                 <li><a href="{{ url_for('myworkouts') }}">My Workouts</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}

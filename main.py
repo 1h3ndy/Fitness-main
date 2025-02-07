@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect, url_for, request, flash
+from flask import Flask, render_template, session, redirect, url_for, request, flash, jsonify
 import sqlite3
 from markupsafe import escape
 
@@ -127,13 +127,61 @@ def myworkouts():
 
 
 
+@app.route('/weight-log')
+
+def weight_log():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('weight_log.html')
 
 
 
+@app.route('/muscleusage', methods=['POST'])
+def muscleusage():
+    if 'username' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
 
+    username = session['username']
 
+    conn = sqlite3.connect('login.db')
+    cursor = conn.cursor()
 
+    cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
+    user = cursor.fetchone()
 
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    user_id = user[0]
+
+    cursor.execute("SELECT * FROM User_Body WHERE User_ID = ?", (user_id,))
+    user_body = cursor.fetchone()
+
+    if not user_body:
+        cursor.execute("""
+            INSERT OR IGNORE INTO User_Body (User_ID, Shoulders_Percent, Back_Percent, Arms_Percent, Legs_Percent, Chest_Percent, Last_Reset)
+            VALUES (?, 0, 0, 0, 0, 0, DATE('now'))
+        """, (user_id,))
+        conn.commit()
+
+    cursor.execute("""
+        SELECT Shoulders_Percent, Back_Percent, Arms_Percent, Legs_Percent, Chest_Percent 
+        FROM User_Body WHERE User_ID = ?
+    """, (user_id,))
+    data = cursor.fetchone()
+
+    conn.close()
+
+    if not data:
+        return jsonify({"shoulders": 0, "back": 0, "arms": 0, "legs": 0, "chest": 0})
+
+    return jsonify({
+        "shoulders": data[0],
+        "back": data[1],
+        "arms": data[2],
+        "legs": data[3],
+        "chest": data[4]
+    })
 
 
 
@@ -220,6 +268,61 @@ def get_workouts_api():
     ]
 
     return {"workouts": formatworkouts}, 200
+
+@app.route('/api/get-weight-log', methods=['GET'])
+def get_weight_log():
+    if 'username' not in session:
+        return 401
+
+    username = session['username'] # needs work when we imlement better security / hashing
+
+    with sqlite3.connect('login.db') as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
+        user = cursor.fetchone()  # to get the first row, but since user is unique it doesn't matter, but kinda safer
+        if not user:
+            return 404
+        print(user) # debuig
+        user_id = user[0]
+
+        cursor.execute("SELECT Date, Weight FROM WeightLog WHERE User_ID = ? ORDER BY Date ASC", (user_id,))
+        weight_data = cursor.fetchall()
+
+    formatted_data = [{"date": row[0], "weight": row[1]} for row in weight_data]
+    print(formatted_data)
+    return {"weight_log": formatted_data}, 200
+# format to render with html.
+
+@app.route('/api/add-weight', methods=['POST'])
+def add_weight():
+    if 'username' not in session:
+        return {"message": "unauthorized"}, 401
+
+    username = session['username']
+    weight = request.get_json().get('weight')
+
+
+    try:
+        weight = float(weight)  # check number put in try becuase cuasaing errors
+    except ValueError:
+        return {"message": "didnt enter"}, 400
+
+    with sqlite3.connect('login.db') as db:
+        cursor = db.cursor()
+
+
+        cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
+        user = cursor.fetchone()
+        if not user:
+            return {"message": "user not found"}, 404
+
+        user_id = user[0]
+
+
+        cursor.execute("INSERT INTO WeightLog (User_ID, Weight, Date) VALUES (?, ?, DATE('now'))", (user_id, weight))
+        db.commit()
+
+    return {"message": " successful"}, 201
 
 
 
