@@ -28,30 +28,53 @@
     </header>
     <main>
         <h2>Your Workouts</h2>
-        <ul id="workoutList"></ul>
+        <ul id="workoutList"></ul> <! links to the js list code-->
     </main>
 
-    <script>
-        async function fetchWorkouts() {
-            const response = await fetch('/api/get-workouts');
-            if (response.ok) {
-                const data = await response.json();
-                const workoutList = document.getElementById('workoutList');
-                data.workouts.forEach((workout) => {
-                    const li = document.createElement('li');
-                    li.textContent = `
-                        Date: ${workout.date}, Exercise: ${workout.exercise},
-                        Sets: ${workout.sets}, Reps: ${workout.reps}, Weight: ${workout.weight}kg
-                    `;
-                    workoutList.appendChild(li);
-                });
-            } else {
-                console.error('Failed to get your  workouts.');
-            }
-        }
+<script>
+    async function fetchWorkouts() {
+        const response = await fetch('/api/get-workouts');
+        if (response.ok) {
+            const responsedata = await response.json();
+            const workoutList = document.getElementById('workoutList');
 
-        fetchWorkouts();
-    </script>
+
+            const group = {};
+            responsedata.workouts.forEach((item) => {
+                const id = item.workout_id;
+
+                group[id] = {
+                    date: item.date,
+
+                    exercises: []
+                };
+
+                group[id].exercises.push({
+                    name: item.exercise,
+                    sets: item.sets,
+                    reps: item.reps,
+                    weight: item.weight
+                });
+            });
+
+
+            for (const id in group) {
+                const li = document.createElement('li');
+                li.classList.add('workoutindividual');
+                const a = document.createElement('a');
+                a.href = `/workout/${id}`;
+                a.textContent = group[id].date;
+                li.appendChild(a);
+                workoutList.appendChild(li);
+            }
+
+        }
+    }
+
+    fetchWorkouts();
+</script>
+
+
 </body>
 
 </html>

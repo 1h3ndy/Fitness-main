@@ -115,6 +115,13 @@ form {
     margin: 20px auto;
 }
 
+.workoutindividual {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
 
 .container label,
 .container input {
@@ -122,7 +129,7 @@ form {
     width: 100%;
     margin-bottom: 10px;
 }
-/* code above allows forms to be vertical*/
+
 
 input[type="text"],
 input[type="password"] {

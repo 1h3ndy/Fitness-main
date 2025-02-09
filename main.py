@@ -20,7 +20,7 @@ exercises_dict = {
     'Bicep Curl': 'Arms',
     'Tricep Extension': 'Arms',
     'Hammer Curl': 'Arms'
-} # make createworkout.html pull from here
+}  # make createworkout.html pull from here
 
 app = Flask(__name__)
 #permanent = True
@@ -31,29 +31,24 @@ with sqlite3.connect('login.db') as db:
     db.execute("PRAGMA foreign_keys = ON")
 
 
-
-
 @app.route('/')
 def home():
-   
     if 'username' in session:
         return render_template('home.html')
     return redirect(url_for('login'))
 
+
 @app.route('/login')
 def login():
-  
     return render_template('login.html')
+
 
 @app.route('/signup')
 def signup():
-
     return render_template('signup.html')
 
 
-
-
-@app.route('/add', methods=['POST']) # updated add for new database schema
+@app.route('/add', methods=['POST'])  # updated add for new database schema
 def add():
     if request.form['password'] != request.form['psw-repeat']:
         flash("Passwords ")
@@ -77,7 +72,7 @@ def add():
             db.commit()
             flash(f"User '{request.form['username']}' added successfully!")
             return redirect(url_for('home'))
-        except Exception as e: # let them kno its taken
+        except Exception as e:  # let them kno its taken
 
             flash("An error occurred.")
             return redirect(url_for('login'))
@@ -85,7 +80,6 @@ def add():
 
 @app.route('/verify', methods=['POST'])
 def verify():
-   
     with sqlite3.connect('login.db') as db:
         cursor = db.cursor()
         cursor.execute("SELECT * FROM User WHERE Name=? AND Password=?",
@@ -96,9 +90,8 @@ def verify():
         else:
             session.permanent = True
             session['username'] = request.form['username']
-             #get email also unless we force usernames to be unique
-            return redirect(url_for('home'))  
-
+            #get email also unless we force usernames to be unique
+            return redirect(url_for('home'))
 
 
 @app.route('/un')
@@ -107,17 +100,19 @@ def un():
         return 'Logged in as %s' % escape(session['username'])
     return 'You are not logged in.'
 
+
 @app.route('/logout')
 def logout():
-    
     session.pop('username', None)
     return redirect(url_for('login'))
 
+
 @app.route('/create_workout')
 def createworkout():
-    if 'username' not in session: # ion my testing just becuase theres a username in session inst very good security, change
+    if 'username' not in session:  # ion my testing just becuase theres a username in session inst very good security, change
         return redirect(url_for('login'))
     return render_template('create_workout.html')
+
 
 @app.route('/my_workouts')
 def myworkouts():
@@ -126,14 +121,11 @@ def myworkouts():
     return render_template('my_workouts.html')
 
 
-
 @app.route('/weight-log')
-
 def weight_log():
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('weight_log.html')
-
 
 
 @app.route('/muscleusage', methods=['POST'])
@@ -184,8 +176,6 @@ def muscleusage():
     })
 
 
-
-
 ## api section, mabe seperate file .
 @app.route('/create-workout/submit', methods=['POST'])
 def create_workout_submit():
@@ -194,7 +184,8 @@ def create_workout_submit():
     print("session useranem:" + session['username'])
 
     username = session['username']
-    with sqlite3.connect('login.db') as db: # we need to connect with foregn keeys enabled always, FIXES BUG WHERE STUFF DOESNT AUTOINCREMENT
+    with sqlite3.connect(
+            'login.db') as db:  # we need to connect with foregn keeys enabled always, FIXES BUG WHERE STUFF DOESNT AUTOINCREMENT
         cursor = db.cursor()
         cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
         user = cursor.fetchone()
@@ -218,10 +209,53 @@ def create_workout_submit():
             cursor.execute("""
                 INSERT INTO Exercise (Workout_ID, Exercise_Name, No_Sets, No_Reps_Per_Set, Weight)
                 VALUES (?, ?, ?, ?, ?) 
-            """, (workout_id, name, sets, reps, weight))#question mark is %s
+            """, (workout_id, name, sets, reps, weight))  #question mark is %s
+
+            # now udate user percents
+
+            cursor.execute("SELECT * FROM User_Body WHERE User_ID = ?", (user_id,))
+            user_body = cursor.fetchone()
+            muscleused = exercises_dict[name]
+            print(muscleused)
+
+            amnttoadd = (int(sets) / 12) * 100
+            cursor.execute(f"""
+            UPDATE User_Body SET {muscleused}_Percent = {muscleused}_Percent + ?
+            where User_ID = ?
+            """, (amnttoadd, user_id))
+
         db.commit()
 
     return redirect(url_for('myworkouts'))
+
+
+@app.route('/workout/<workout_id>')
+def workout_detail(workout_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    username = session['username']
+    with sqlite3.connect('login.db') as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
+        user = cursor.fetchone()
+        if not user:
+            return "User not found", 404
+        user_id = user[0]
+
+        cursor.execute("""
+            SELECT 
+                Exercise.Exercise_Name,
+                Exercise.No_Sets,
+                Exercise.No_Reps_Per_Set,
+                Exercise.Weight
+            FROM Workouts
+            JOIN Exercise ON Workouts.Workout_ID = Exercise.Workout_ID
+            WHERE Workouts.Workout_ID = ? AND Workouts.User_ID = ?
+        """, (workout_id, user_id))
+        exercises = cursor.fetchall()
+
+    return render_template('workoutindividual.html', workout_id=workout_id, exercises=exercises)
 
 
 @app.route('/api/get-workouts', methods=['GET'])
@@ -235,16 +269,15 @@ def get_workouts_api():
 
         cursor = db.cursor()
 
-
         cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
         user = cursor.fetchone()
         if not user:
             return {"message": "User not found"}, 404
         user_id = user[0]
 
-
         cursor.execute("""
             SELECT 
+                Workouts.Workout_ID,
                 Workouts.Date, 
                 Exercise.Exercise_Name, 
                 Exercise.No_Sets, 
@@ -258,23 +291,25 @@ def get_workouts_api():
         workouts = cursor.fetchall()
     formatworkouts = [
         {
-            "date": row[0],
-            "exercise": row[1],
-            "sets": row[2],
-            "reps": row[3],
-            "weight": row[4]
+            "workout_id": row[0],
+            "date": row[1],
+            "exercise": row[2],
+            "sets": row[3],
+            "reps": row[4],
+            "weight": row[5]
         }
         for row in workouts
     ]
 
     return {"workouts": formatworkouts}, 200
 
+
 @app.route('/api/get-weight-log', methods=['GET'])
 def get_weight_log():
     if 'username' not in session:
         return 401
 
-    username = session['username'] # needs work when we imlement better security / hashing
+    username = session['username']  # needs work when we imlement better security / hashing
 
     with sqlite3.connect('login.db') as db:
         cursor = db.cursor()
@@ -282,7 +317,7 @@ def get_weight_log():
         user = cursor.fetchone()  # to get the first row, but since user is unique it doesn't matter, but kinda safer
         if not user:
             return 404
-        print(user) # debuig
+        print(user)  # debuig
         user_id = user[0]
 
         cursor.execute("SELECT Date, Weight FROM WeightLog WHERE User_ID = ? ORDER BY Date ASC", (user_id,))
@@ -291,6 +326,8 @@ def get_weight_log():
     formatted_data = [{"date": row[0], "weight": row[1]} for row in weight_data]
     print(formatted_data)
     return {"weight_log": formatted_data}, 200
+
+
 # format to render with html.
 
 @app.route('/api/add-weight', methods=['POST'])
@@ -301,7 +338,6 @@ def add_weight():
     username = session['username']
     weight = request.get_json().get('weight')
 
-
     try:
         weight = float(weight)  # check number put in try becuase cuasaing errors
     except ValueError:
@@ -310,7 +346,6 @@ def add_weight():
     with sqlite3.connect('login.db') as db:
         cursor = db.cursor()
 
-
         cursor.execute("SELECT User_ID FROM User WHERE Name = ?", (username,))
         user = cursor.fetchone()
         if not user:
@@ -318,12 +353,10 @@ def add_weight():
 
         user_id = user[0]
 
-
         cursor.execute("INSERT INTO WeightLog (User_ID, Weight, Date) VALUES (?, ?, DATE('now'))", (user_id, weight))
         db.commit()
 
     return {"message": " successful"}, 201
-
 
 
 app.secret_key = 'the random string'
